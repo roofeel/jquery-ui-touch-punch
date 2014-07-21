@@ -76,20 +76,23 @@
       return;
     }
 
-    // Set the flag to prevent other widgets from inheriting the touch event
-    touchHandled = true;
+    if (self._timer) return;
+    self._timer = setTimeout(function() {
+      // Set the flag to prevent other widgets from inheriting the touch event
+      touchHandled = true;
 
-    // Track movement to determine if interaction was a click
-    self._touchMoved = false;
+      // Track movement to determine if interaction was a click
+      self._touchMoved = false;
 
-    // Simulate the mouseover event
-    simulateMouseEvent(event, 'mouseover');
+      // Simulate the mouseover event
+      simulateMouseEvent(event, 'mouseover');
 
-    // Simulate the mousemove event
-    simulateMouseEvent(event, 'mousemove');
+      // Simulate the mousemove event
+      simulateMouseEvent(event, 'mousemove');
 
-    // Simulate the mousedown event
-    simulateMouseEvent(event, 'mousedown');
+      // Simulate the mousedown event
+      simulateMouseEvent(event, 'mousedown');      
+    }, 800);
   };
 
   /**
@@ -97,7 +100,12 @@
    * @param {Object} event The document's touchmove event
    */
   mouseProto._touchMove = function (event) {
-
+    var self = this;
+    if (self._timer) {
+      clearTimeout(self._timer);
+      self._timer = null;
+    }
+    
     // Ignore event if not handled
     if (!touchHandled) {
       return;
@@ -115,6 +123,11 @@
    * @param {Object} event The document's touchend event
    */
   mouseProto._touchEnd = function (event) {
+    var self = this;
+    if (self._timer) {
+      clearTimeout(self._timer);
+      self._timer = null;
+    }
 
     // Ignore event if not handled
     if (!touchHandled) {
